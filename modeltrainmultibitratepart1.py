@@ -1,4 +1,4 @@
-#第二重要的部分，用于训练使用,这个是act =False，使用act版本
+
 
 
 
@@ -18,7 +18,7 @@ import numpy as np
 _iscomplex = True
 batch_size = 64
 epochs = 61
-learning_rate = 1e-5  #1e-3可能过高 需要调成 3e-4 或者 5e-4效果更加
+learning_rate = 1e-5  
 epoch_start = 51  # only used when loading ckpt
 
 # set path
