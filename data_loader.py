@@ -1,4 +1,4 @@
-#数据的导入，将数据集按照4:1 的形式进行拆分，用于训练以及测试使用，用于训练的数据需要同时加入[1]与[2],用于测试的数据仅加了[2],此处加不加[1]都可以，我这里没加，但是如果需要添加时候，计算LOSS处也应该进行修改。
+
 
 import os, pickle, torch
 from torch.utils.data import Dataset
@@ -17,7 +17,7 @@ class Dataset_sentence(Dataset):
         self.rev_dict = {vv: kk for kk, vv in self.dict.items()}
         self.data_num = [[1]+list(map(lambda t:self.dict[t], x.split(' '))) + [2]
                          + (self.len_range[1]-len(x.split(' ')))*[0]
-                         for idx, x in enumerate(tmp['sent_str']) if idx%5!=0] #此处用来划分train 和 test,我添加了一个SOS起始符号
+                         for idx, x in enumerate(tmp['sent_str']) if idx%5!=0] 
         print('[*]------------vocabulary size is:----', self.get_dict_len())
     
 
@@ -45,7 +45,7 @@ class Dataset_sentence_test(Dataset):
         self.rev_dict = {vv: kk for kk, vv in self.dict.items()}
         self.data_num = [list(map(lambda t:self.dict[t], x.split(' '))) + [2]
                          + (self.len_range[1]-len(x.split(' ')))*[0]
-                         for idx, x in enumerate(tmp['sent_str']) if idx%5==0][:5000]    #此处为了节约时间，选取前多少个，自己进行决定
+                         for idx, x in enumerate(tmp['sent_str']) if idx%5==0][:5000]    
         print('[*]------------vocabulary size is:----', self.get_dict_len())
 
     def __getitem__(self, index):
