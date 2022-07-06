@@ -1,4 +1,4 @@
-#第二重要的部分，用于训练使用,这个是act =False，使用act版本
+
 
 import os, platform
 import torch
@@ -39,7 +39,7 @@ train_data_loader = data.DataLoader(data_train,**train_loader_params)
 
 vocab_size = data_train.get_dict_len()
 
-tmp_model = make_model(vocab_size,vocab_size,act1=False,act2=False).to(device)  #此处修改act决定是否使用，此处有修改如果不行，请删除，用act时候加act=ture
+tmp_model = make_model(vocab_size,vocab_size,act1=False,act2=False).to(device)  
 tmp_denoiser = make_denoiser1(vocab_size,vocab_size,act1=False,act2=False).to(device)
 
 
@@ -67,14 +67,12 @@ def train(model, model2,device, train_loader, optimizer, epoch):
         train_sents = train_sents.to(device)  # with eos
         #print(train_sents)############################
         len_batch = len_batch.to(device) #cpu()
-#感觉修改此处即可
         optimizer.zero_grad()
         src = train_sents[:, 1:]
         trg = train_sents[:, :-1]
         trg_y = train_sents[:, 1:]
         src_mask = (src != 0).unsqueeze(-2).to(device)
         tgt_mask = make_std_mask(trg).to(device)
-        ##output= model.forward(src,trg,src_mask, tgt_mask,len_batch)##改了
         output= model.encode(src, src_mask)
         _snr1= np.random.randint(-2,5)
         output= channel.agwn(output, _snr=_snr1)
