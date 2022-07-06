@@ -1,4 +1,4 @@
-#第二重要的部分，用于训练使用,这个是act =False，使用act版本
+
 
 import os, platform
 import torch
@@ -39,7 +39,7 @@ train_data_loader = data.DataLoader(data_train,**train_loader_params)
 
 vocab_size = data_train.get_dict_len()
 
-tmp_model = make_model(vocab_size,vocab_size,act1=False,act2=False).to(device)  #此处修改act决定是否使用，此处有修改如果不行，请删除，用act时候加act=ture
+tmp_model = make_model(vocab_size,vocab_size,act1=False,act2=False).to(device)  
 tmp_decoder = make_decoder(vocab_size,vocab_size,N1=32).to(device)
 
 #tmp_model.load_state_dict(torch.load('./ckpt/fadenew7_shared_epoch{}.pth'.format(epoch_start-1)))####################
@@ -69,7 +69,6 @@ def train(model, device, train_loader, optimizer, epoch):
         train_sents = train_sents.to(device)  # with eos
         #print(train_sents)############################
         len_batch = len_batch.to(device) #cpu()
-#感觉修改此处即可
         optimizer.zero_grad()
         src = train_sents[:, 1:]
         trg = train_sents[:, :-1]
