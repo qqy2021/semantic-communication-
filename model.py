@@ -1,4 +1,4 @@
-#3*2，3 ,重要参数 是否act ，act的最大次数，以及循环次数
+
 
 import torch
 import torch.nn as nn
@@ -11,8 +11,8 @@ import numpy as np
 from utils2 import  Channel,clip_gradient
 #import torchtext.vocab as vocab
 
-_iscomplex = True  #暂时还没搞懂此处true和false的差别
-channel = Channel(_iscomplex=_iscomplex) #此处感觉没有使用到，等会可以放到训练部分的。
+_iscomplex = True  
+channel = Channel(_iscomplex=_iscomplex) 
 # _snr = 0
 
 class EncoderDecoder(nn.Module):
@@ -27,7 +27,7 @@ class EncoderDecoder(nn.Module):
         self.src_embed = src_embed
         self.tgt_embed = tgt_embed
         self.generator = generator
-        self.channel_dim = 16 ##偷懒了
+        self.channel_dim = 16 
         self.num_hidden = 128
         self.from_channel_emb = nn.Sequential(nn.Linear(self.channel_dim, self.num_hidden*2), nn.ReLU(),
                                               nn.Linear(self.num_hidden*2, self.num_hidden))
@@ -221,7 +221,7 @@ def attention(query, key, value, mask=None, dropout=None):
     scores = torch.matmul(query, key.transpose(-2, -1)) \
              / math.sqrt(d_k)
     if mask is not None:
-        scores = scores.masked_fill(mask == 0, -1e9)       #原先此处为0，感觉不正确 应该为1！又被我改成了0
+        scores = scores.masked_fill(mask == 0, -1e9)       
     p_attn = F.softmax(scores, dim = -1)
     if dropout is not None:
         p_attn = dropout(p_attn)
@@ -368,7 +368,7 @@ class Dense2(nn.Module):
         #print(x.shape)
         return x  
 
-def make_dense(device,N1=16,N2=31):#N为有几层，d_model为词向量维度，h表示头的数目，ff是中间的过度，前向传输时候用到
+def make_dense(device,N1=16,N2=31):
     "Helper: Construct a model from hyperparameters."
     model = Dense2(N1,N2,device)
     
@@ -382,7 +382,7 @@ def make_model(src_vocab, tgt_vocab, N=3,
     ff = PositionwiseFeedForward(d_model, d_ff, dropout)
     position = PositionalEncoding(d_model, dropout)
     model = EncoderDecoder(
-        Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N,d_model,act1),#此处修改 false和 true 进行调整 是否使用
+        Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N,d_model,act1),
         Decoder(DecoderLayer(d_model, c(attn), c(attn), 
                              c(ff), dropout), N,d_model,act2),
         nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
@@ -397,7 +397,7 @@ def make_model(src_vocab, tgt_vocab, N=3,
 
 
 def make_decoder(src_vocab, tgt_vocab, N=3, N1=32,
-               d_model=128, d_ff=1024, h=8, dropout=0.1,act1=False,act2=False):#N为有几层，d_model为词向量维度，h表示头的数目，ff是中间的过度，前向传输时候用到
+               d_model=128, d_ff=1024, h=8, dropout=0.1,act1=False,act2=False):
     "Helper: Construct a model from hyperparameters."
     c = copy.deepcopy
     attn = MultiHeadedAttention(h, d_model)
@@ -431,10 +431,10 @@ class ACT_basic(nn.Module):
         super(ACT_basic, self).__init__()
         self.sigma = nn.Sigmoid()
         self.p = nn.Linear(hidden_size,1)  
-        self.p.bias.data.fill_(1) #用于初始化偏置
+        self.p.bias.data.fill_(1) 
         self.threshold = 1 - 0.1
         self.device = torch.device("cuda:1" )
-        self.positionalEncoding=PositionalEncoding(128,0.1) #d_model and dropout  ，此处改了！！！
+        self.positionalEncoding=PositionalEncoding(128,0.1) 
     def forward(self, state, inputs, src_mask, tgt_mask,fn,  max_hop, encoder_output=None):
         # init_hdd
         ## [B, S]
@@ -449,7 +449,7 @@ class ACT_basic(nn.Module):
         # for l in range(self.num_layers):
         while( ((halting_probability<self.threshold) & (n_updates < 7)).byte().any()):
             # Add timing signal
-            #state = state + time_enc[:, :inputs.shape[1], :].type_as(inputs.data)  #暂时先不使用，启用此处
+            #state = state + time_enc[:, :inputs.shape[1], :].type_as(inputs.data)  
 
             p = self.sigma(self.p(state)).squeeze(-1)
             # Mask for inputs which have not halted yet
@@ -493,7 +493,7 @@ class ACT_basic(nn.Module):
             ## previous_state is actually the new_state at end of hte loop 
             ## to save a line I assigned to previous_state so in the next 
             ## iteration is correct. Notice that indeed we return previous_state
-            #state = state + pos_enc[:, step, :].unsqueeze(1).repeat(1,inputs.shape[1],1).type_as(inputs.data) #此处修改!!!!!!
+            #state = state + pos_enc[:, step, :].unsqueeze(1).repeat(1,inputs.shape[1],1).type_as(inputs.data) 
             step+=1
         return previous_state, remainders,n_updates
 
@@ -517,7 +517,7 @@ class Denoiser1(nn.Module):
 
 
 def make_denoiser1(src_vocab, tgt_vocab, N=3, N1=32,
-               d_model=128, d_ff=1024, h=8, dropout=0.1,act1=False,act2=False):#N为有几层，d_model为词向量维度，h表示头的数目，ff是中间的过度，前向传输时候用到
+               d_model=128, d_ff=1024, h=8, dropout=0.1,act1=False,act2=False):
     "Helper: Construct a model from hyperparameters."
     c = copy.deepcopy
     attn = MultiHeadedAttention(h, d_model)
