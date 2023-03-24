@@ -8,7 +8,7 @@ from collections import namedtuple
 import math, copy, time
 from torch.autograd import Variable
 import numpy as np
-from utils2 import  Channel,clip_gradient
+from utils import  Channel,clip_gradient
 #import torchtext.vocab as vocab
 
 _iscomplex = True  
