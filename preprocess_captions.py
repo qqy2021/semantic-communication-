@@ -14,7 +14,7 @@ def load_doc(filename):
     file.close()
     return text
 
-"""
+
 # split a loaded document into sentences
 def to_sentences(doc):
     return doc.strip().split('\n')
@@ -115,7 +115,7 @@ save_clean_sentences(sentences, 'english.pkl')
 # spot check
 for i in range(10):
     print(sentences[i])
-"""
+
 
 from pickle import load
 from collections import Counter
