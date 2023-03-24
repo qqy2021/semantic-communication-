@@ -5,7 +5,7 @@ import torch
 from math import log
 from data_loader import Dataset_sentence, collate_func
 from model import make_model,subsequent_mask,make_std_mask,make_decoder,make_denoiser
-from utils import Normlize_tx, Channel, Crit, clip_gradient
+from utils import Channel, Crit, clip_gradient
 import torch.utils.data as data
 import torch.optim as optim
 import numpy as np
